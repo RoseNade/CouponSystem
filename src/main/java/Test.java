@@ -59,7 +59,7 @@ public class Test {
 
             coupon1.amount(1)
                     .image("Porno")
-                    .category(Category.FOOD)
+                    .category(Category.ELECTRICITY)
                     .startDate(new Date(2022, 6, 5))
                     .endDate(new Date(2022, 7, 8))
                     .title("BBW")
@@ -69,6 +69,11 @@ public class Test {
 //            System.out.println(coupon1.getStartDate());
 //            System.out.println(coupon1.getEndDate());
             couponsDAO.addCoupon(coupon1);
+//            System.out.println("@@@@@@@@@@@@@@@@@@@@@@");
+//            System.out.println("@@@@@@@@@@@@@@@@@@@@@@");
+//            System.out.println(couponsDAO.getOneCoupon(1));
+//            System.out.println("@@@@@@@@@@@@@@@@@@@@@@");
+//            System.out.println("@@@@@@@@@@@@@@@@@@@@@@");
 
             System.out.println("@@@@@@@@@@Check if companies exist@@@@@@@@@@");
 //            ((CompaniesDBDAO) companiesDAO).isCompanyExist(8);
@@ -100,8 +105,23 @@ public class Test {
             System.out.println("@@@@@@@@@@GET ALL COUPONS@@@@@@@@@@");
             couponsDAO.getAllCoupons().forEach(System.out::println);
 
-            couponsDAO.deleteCouponPurchase(1, 1);
-            couponsDAO.deleteCoupon(1);
+            System.out.println("@@@@@@@@@@UPDATE COUPONS@@@@@@@@@@");
+            Coupon toUpdateCoupon = new Coupon();
+            toUpdateCoupon.image("dsadsa")
+                    .category(Category.RESORT)
+                    .startDate(new Date(2021, 6, 5))
+                    .endDate(new Date(2022, 5, 5))
+                    .title("dsadsadsa")
+                    .description("dfas")
+                    .companyID(1).price(200);
+
+
+            couponsDAO.updateCoupon(1, toUpdateCoupon);
+
+            System.out.println(couponsDAO.getOneCoupon(1));
+
+//            couponsDAO.deleteCouponPurchase(1, 1);
+//            couponsDAO.deleteCoupon(1);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

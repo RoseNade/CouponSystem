@@ -15,7 +15,6 @@ public class Coupon {
     private int amount;
     private double price;
     private String image;
-//    private static SimpleDateFormat format = new SimpleDateFormat("dd-MM--yyyy");
 
     public Coupon() {
     }

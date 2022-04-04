@@ -6,6 +6,7 @@ import db.JDBCUtils;
 import db.ResultUtils;
 import exceptions.NotFound;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -74,6 +75,7 @@ public class CouponsDBDAO implements CouponsDAO {
         coupon.getEndDate().setYear(yearEndDate);
         coupon.getStartDate().setMonth(monthStartDate);
         coupon.getEndDate().setMonth(monthEndDate);
+
 
         params.put(1, coupon.getTitle());
         params.put(2, coupon.getDescription());

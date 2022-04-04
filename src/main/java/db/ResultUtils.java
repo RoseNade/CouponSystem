@@ -33,7 +33,7 @@ public class ResultUtils {
     public static Coupon fromHashMapReturnCoupon(Map<String, Object> row) {
         int id = (int) row.get("ID");
         int companyID = (int) row.get("COMPANY_ID");
-        Category category = (Category) row.get("CATEGORY");
+        int categoryValue = (int) row.get("CATEGORY_ID");
         String title = (String) row.get("TITLE");
         String description = (String) row.get("DESCRIPTION");
         Date startDate = (Date) row.get("START_DATE");
@@ -41,7 +41,7 @@ public class ResultUtils {
         int amount = (int) row.get("AMOUNT");
         double price = (double) row.get("PRICE");
         String image = (String) row.get("IMAGE");
-        return new Coupon(id, companyID, category, title, description, startDate, endDate, amount, price, image);
+        return new Coupon(id, companyID, Category.values()[categoryValue - 1], title, description, startDate, endDate, amount, price, image);
     }
 
     public static boolean exists(HashMap<String, Object> row) {

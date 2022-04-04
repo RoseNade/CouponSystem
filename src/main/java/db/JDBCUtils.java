@@ -139,9 +139,9 @@ public class JDBCUtils {
             } else if (obj instanceof Double) {
                 statement.setDouble(key, (double) obj);
             } else if (obj instanceof Date) {
-//                java.sql.Date date = new java.sql.Date(((Date) obj).getTime());
                 statement.setDate(key, (Date) obj);
             }
+
         }
 
         statement.execute();
