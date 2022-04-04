@@ -1,6 +1,8 @@
 package beans;
 
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.sql.Date;
 
 public class Coupon {
     private int id;
@@ -13,16 +15,13 @@ public class Coupon {
     private int amount;
     private double price;
     private String image;
+//    private static SimpleDateFormat format = new SimpleDateFormat("dd-MM--yyyy");
 
     public Coupon() {
     }
 
     public Coupon(int id, int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
-        this(companyID, category, title, description, startDate, endDate, amount, price, image);
         this.id = id;
-    }
-
-    public Coupon(int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
         this.companyID = companyID;
         this.category = category;
         this.title = title;
@@ -33,6 +32,73 @@ public class Coupon {
         this.price = price;
         this.image = image;
     }
+
+    public Coupon id(int id) {
+        this.id = id;
+        return this;
+    }
+
+    public Coupon companyID(int companyID) {
+        this.companyID = companyID;
+        return this;
+    }
+
+    public Coupon category(Category category) {
+        this.category = category;
+        return this;
+    }
+
+    public Coupon title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public Coupon description(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public Coupon startDate(Date date){
+        this.startDate = date;
+        return this;
+    }
+
+    public Coupon endDate(Date date){
+        this.endDate = date;
+        return this;
+    }
+
+    public Coupon amount(int amount){
+        this.amount = amount;
+        return this;
+    }
+
+    public Coupon price(double price){
+        this.price = price;
+        return this;
+    }
+
+    public Coupon image(String image){
+        this.image = image;
+        return this;
+    }
+
+//    public Coupon(int id, int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
+//        this(companyID, category, title, description, startDate, endDate, amount, price, image);
+//        this.id = id;
+//    }
+//
+//    public Coupon(int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
+//        this.companyID = companyID;
+//        this.category = category;
+//        this.title = title;
+//        this.description = description;
+//        this.startDate = startDate;
+//        this.endDate = endDate;
+//        this.amount = amount;
+//        this.price = price;
+//        this.image = image;
+//    }
 
     public int getId() {
         return id;

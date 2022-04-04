@@ -5,15 +5,13 @@ import beans.Company;
 import beans.Coupon;
 import beans.Customer;
 
-import java.util.Date;
+import java.text.ParseException;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ResultUtils {
-    //private String email;
-    //    private String password;
-    //    private ArrayList<Coupon> coupons;
-    public static Company fromHashMapReturnCompany(Map<String, Object> row){
+    public static Company fromHashMapReturnCompany(Map<String, Object> row) {
         int id = (int) row.get("ID");
         String name = (String) row.get("NAME");
         String email = (String) row.get("EMAIL");
@@ -22,7 +20,7 @@ public class ResultUtils {
         return new Company(id, name, email, password, null);
     }
 
-    public static Customer fromHashMapReturnCustomer(Map<String, Object> row){
+    public static Customer fromHashMapReturnCustomer(Map<String, Object> row) {
         int id = (int) row.get("ID");
         String firstName = (String) row.get("FIRST_NAME");
         String lastName = (String) row.get("LAST_NAME");
@@ -32,7 +30,7 @@ public class ResultUtils {
         return new Customer(id, firstName, lastName, email, password);
     }
 
-    public static Coupon fromHashMapReturnCoupon(Map<String, Object> row){
+    public static Coupon fromHashMapReturnCoupon(Map<String, Object> row) {
         int id = (int) row.get("ID");
         int companyID = (int) row.get("COMPANY_ID");
         Category category = (Category) row.get("CATEGORY");
@@ -43,13 +41,12 @@ public class ResultUtils {
         int amount = (int) row.get("AMOUNT");
         double price = (double) row.get("PRICE");
         String image = (String) row.get("IMAGE");
-        return new Coupon(id, companyID, category, title, description, startDate, endDate, amount, price
-        , image);
+        return new Coupon(id, companyID, category, title, description, startDate, endDate, amount, price, image);
     }
 
-//    public static boolean exists(HashMap<String, Object> row){
-//        long result = (long) row.get("res");
-//        return result == 1;
-//    }
+    public static boolean exists(HashMap<String, Object> row) {
+        long result = (long) row.get("res");
+        return result == 1;
+    }
 
 }

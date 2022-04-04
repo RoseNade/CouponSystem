@@ -4,6 +4,7 @@ import beans.Company;
 import beans.Customer;
 import db.JDBCUtils;
 import db.ResultUtils;
+import exceptions.NotFound;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,17 +12,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CustomerDBDAO implements CustomersDAO{
-//    private ConnectionPool connectionPool;
+public class CustomerDBDAO implements CustomersDAO {
+    //    private ConnectionPool connectionPool;
     private static final String QUERY_INSERT = "INSERT INTO `couponsystem`.`customers` (`FIRST_NAME`, `LAST_NAME`, `EMAIL`, `PASSWORD`) VALUES (?, ?, ?, ?);";
     private static final String QUERY_DELETE = "DELETE FROM `couponsystem`.`customers` WHERE (`ID` = ?);";
     private static final String QUERY_UPDATE = "UPDATE `couponsystem`.`customers` SET `FIRST_NAME` = ?, `LAST_NAME` = ?, `EMAIL` = ?, `PASSWORD` = ? WHERE (`ID` = ?);";
     private static final String QUERY_SELECT_ALL = "SELECT * FROM couponsystem.customers;";
     private static final String QUERY_SELECT_SINGLE_CUSTOMER = "SELECT * FROM couponsystem.customers where id = ?;";
-    private static final String QUERY_EXISTS = "select exists(select * FROM couponsystem.customers WHERE `email` = '?' AND `password` = '?') as res;";
+    private static final String QUERY_EXISTS = "select exists(select * FROM couponsystem.customers WHERE `email` = ? AND `password` = ?) as res;";
+    private static final String QUERY_EXISTS_BY_ID = "select exists(select * FROM couponsystem.customers WHERE `id` = ?) as res;";
+
+
+    private boolean isCustomerExistByID(int id) throws SQLException, InterruptedException {
+        boolean flag = false;
+
+        Map<Integer, Object> params = new HashMap<>();
+
+        params.put(1, id);
+
+        List<?> rows = JDBCUtils.executeResult(QUERY_EXISTS_BY_ID, params);
+
+//        return rows.size() > 0;
+        for (Object row : rows) {
+            flag = ResultUtils.exists((HashMap<String, Object>) row);
+            break;
+        }
+
+//        System.out.println(flag);
+        return flag;
+    }
 
     @Override
     public boolean isCustomerExists(String email, String password) throws SQLException, InterruptedException {
+        boolean flag = false;
+
         Map<Integer, Object> params = new HashMap<>();
 
         params.put(1, email);
@@ -29,7 +53,12 @@ public class CustomerDBDAO implements CustomersDAO{
 
         List<?> rows = JDBCUtils.executeResult(QUERY_EXISTS, params);
 
-        return rows.size() > 0;
+        for (Object row : rows) {
+            flag = ResultUtils.exists((HashMap<String, Object>) row);
+            break;
+        }
+
+        return flag;
     }
 
     @Override
@@ -45,7 +74,11 @@ public class CustomerDBDAO implements CustomersDAO{
     }
 
     @Override
-    public void updateCustomer(int customerID, Customer customer) throws SQLException, InterruptedException {
+    public void updateCustomer(int customerID, Customer customer) throws SQLException, InterruptedException, NotFound {
+
+        if (!isCustomerExistByID(customerID)) {
+            throw new NotFound("Customer not found");
+        }
 
         Map<Integer, Object> params = new HashMap<>();
 
@@ -59,7 +92,12 @@ public class CustomerDBDAO implements CustomersDAO{
     }
 
     @Override
-    public void deleteCustomer(int customerID) throws SQLException, InterruptedException {
+    public void deleteCustomer(int customerID) throws SQLException, InterruptedException, NotFound {
+
+        if (!isCustomerExistByID(customerID)) {
+            throw new NotFound("Customer not found");
+        }
+
         Map<Integer, Object> params = new HashMap<>();
 
         params.put(1, customerID);
@@ -69,7 +107,9 @@ public class CustomerDBDAO implements CustomersDAO{
 
     @Override
     public ArrayList<Customer> getAllCustomers() throws SQLException, InterruptedException {
+
         ArrayList<Customer> customers = new ArrayList<>();
+
         List<?> rows = JDBCUtils.executeResults(QUERY_SELECT_ALL);
 
         for (Object row : rows) {
@@ -80,7 +120,12 @@ public class CustomerDBDAO implements CustomersDAO{
     }
 
     @Override
-    public Customer getOneCustomer(int customerID) throws SQLException, InterruptedException {
+    public Customer getOneCustomer(int customerID) throws SQLException, InterruptedException, NotFound {
+
+        if (!isCustomerExistByID(customerID)) {
+            throw new NotFound("Customer not found");
+        }
+
         Customer customer = null;
 
         Map<Integer, Object> params = new HashMap<>();

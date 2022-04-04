@@ -1,6 +1,9 @@
 package db;
 
+import beans.Category;
 import connections.ConnectionPool;
+import dbDAO.CategoriesDAO;
+import dbDAO.CategoriesDBDAO;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -41,6 +44,8 @@ public class JDBCUtils {
 
     private static final String CREATE_COUPONS_TABLE = "CREATE TABLE `couponsystem`.`coupons` (\n" +
             "  `ID` INT NOT NULL AUTO_INCREMENT,\n" +
+            "  `COMPANY_ID` INT NOT NULL,\n" +
+            "  `CATEGORY_ID` INT NOT NULL,\n" +
             "  `TITLE` VARCHAR(45) NOT NULL,\n" +
             "  `DESCRIPTION` VARCHAR(45) NOT NULL,\n" +
             "  `START_DATE` DATE NOT NULL,\n" +
@@ -48,8 +53,6 @@ public class JDBCUtils {
             "  `AMOUNT` INT NOT NULL,\n" +
             "  `PRICE` DOUBLE NOT NULL,\n" +
             "  `IMAGE` VARCHAR(45) NOT NULL,\n" +
-            "  `COMPANY_ID` INT NOT NULL,\n" +
-            "  `CATEGORY_ID` INT NOT NULL,\n" +
             "  PRIMARY KEY (`ID`),\n" +
             "  INDEX `COMPANY_ID_idx` (`COMPANY_ID` ASC) VISIBLE,\n" +
             "  INDEX `CATEGORY_ID_idx` (`CATEGORY_ID` ASC) VISIBLE,\n" +
@@ -94,6 +97,12 @@ public class JDBCUtils {
         execute(CREATE_CUSTOMERS_TABLE);
         execute(CREATE_COUPONS_TABLE);
         execute(CREATE_CUSTOMERS_VS_COUPONS_TABLE);
+
+        CategoriesDAO categoriesDAO = new CategoriesDBDAO();
+        for (Category category : Category.values()) {
+            String name = category.toString();
+            categoriesDAO.addCategory(name);
+        }
     }
 
     private static void closePreparedStatement(PreparedStatement statement) throws SQLException {
@@ -130,6 +139,7 @@ public class JDBCUtils {
             } else if (obj instanceof Double) {
                 statement.setDouble(key, (double) obj);
             } else if (obj instanceof Date) {
+//                java.sql.Date date = new java.sql.Date(((Date) obj).getTime());
                 statement.setDate(key, (Date) obj);
             }
         }
@@ -206,4 +216,10 @@ public class JDBCUtils {
 
         return list;
     }
+
+//    public static boolean exists(String query, int id){
+//
+//        Map<Integer, Integer> param = new HashMap<>();
+//        if();
+//    }
 }
