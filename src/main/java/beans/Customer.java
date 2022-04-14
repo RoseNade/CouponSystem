@@ -1,5 +1,9 @@
 package beans;
 
+import dbDAO.CustomerDBDAO;
+import dbDAO.CustomersDAO;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Customer {
@@ -9,6 +13,8 @@ public class Customer {
     private String email;
     private String password;
     private ArrayList<Coupon> coupons;
+
+    private CustomersDAO customersDAO = new CustomerDBDAO();
 
     public Customer() {
     }
@@ -26,11 +32,8 @@ public class Customer {
     }
 
     public Customer(int id, String firstName, String lastName, String email, String password) {
+        this(firstName, lastName, email, password);
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
     }
 
     public Customer(int id, String firstName, String lastName, String email, String password, ArrayList<Coupon> coupons) {
@@ -38,12 +41,9 @@ public class Customer {
         this.id = id;
     }
 
-    public int getId() {
+    public int getId() throws SQLException, InterruptedException {
+        this.id = customersDAO.returnCustomerID(firstName, lastName);
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getFirstName() {

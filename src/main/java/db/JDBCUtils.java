@@ -86,6 +86,11 @@ public class JDBCUtils {
 
 
     public static void start() throws SQLException, InterruptedException {
+        System.out.println("   _____________   ___  ______\n" +
+                "  / __/_  __/ _ | / _ \\/_  __/\n" +
+                " _\\ \\  / / / __ |/ , _/ / /   \n" +
+                "/___/ /_/ /_/ |_/_/|_| /_/    \n" +
+                "                              ");
         try {
             execute(DROP_SCHEMA);
         } catch (SQLException e) {
@@ -189,7 +194,7 @@ public class JDBCUtils {
         closeStatementReturnConnection(connection, statement);
     }
 
-    public static List<?> executeResult(String query, Map<Integer, Object> params) throws SQLException, InterruptedException {
+    public static List<?> executeResults(String query, Map<Integer, Object> params) throws SQLException, InterruptedException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         PreparedStatement statement = connection.prepareStatement(query);
 
@@ -217,9 +222,4 @@ public class JDBCUtils {
         return list;
     }
 
-//    public static boolean exists(String query, int id){
-//
-//        Map<Integer, Integer> param = new HashMap<>();
-//        if();
-//    }
 }

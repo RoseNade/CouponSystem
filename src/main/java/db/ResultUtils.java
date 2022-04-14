@@ -5,7 +5,6 @@ import beans.Company;
 import beans.Coupon;
 import beans.Customer;
 
-import java.text.ParseException;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,4 +48,11 @@ public class ResultUtils {
         return result == 1;
     }
 
+    public static int fromHashMapReturnInt(Map<String, Object> row){
+        return (int) row.get("ID");
+    }
+
+    public static int fromHashMapReturnCouponID(Map<String, Object> row){
+        return (int) row.get("COUPON_ID");
+    }
 }

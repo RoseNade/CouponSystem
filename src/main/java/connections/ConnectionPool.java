@@ -17,7 +17,6 @@ public class ConnectionPool {
 
     private ConnectionPool() {
         for (int i = 1; i <= NUM_OF_CONNECTIONS; i++) {
-            System.out.println("Creating connection #" + i);
             try {
                 Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
                 connections.push(conn);
@@ -60,20 +59,19 @@ public class ConnectionPool {
 
     public void closeAllConnection() throws InterruptedException {
 
-        synchronized (connections) {
+//        synchronized (connections) {
 
 //            while (connections.size() < NUM_OF_CONNECTIONS) {
 //                connections.wait();
 //            }
-            if (connections.size() == NUM_OF_CONNECTIONS) {
-                int i = 1;
+        if (connections.size() == NUM_OF_CONNECTIONS) {
+            int i = 1;
 
-                for (Connection conn : connections) {
-                    try {
-                        System.out.println("Closed Connection #" + i++);
-                        conn.close();
-                    } catch (Exception e) {
-                    }
+            for (Connection conn : connections) {
+                try {
+                    conn.close();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
                 }
             }
         }

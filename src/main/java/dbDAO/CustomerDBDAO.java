@@ -1,9 +1,9 @@
 package dbDAO;
 
-import beans.Company;
 import beans.Customer;
 import db.JDBCUtils;
 import db.ResultUtils;
+import exceptions.AlreadyExists;
 import exceptions.NotFound;
 
 import java.sql.SQLException;
@@ -20,8 +20,49 @@ public class CustomerDBDAO implements CustomersDAO {
     private static final String QUERY_SELECT_ALL = "SELECT * FROM couponsystem.customers;";
     private static final String QUERY_SELECT_SINGLE_CUSTOMER = "SELECT * FROM couponsystem.customers where id = ?;";
     private static final String QUERY_EXISTS = "select exists(select * FROM couponsystem.customers WHERE `email` = ? AND `password` = ?) as res;";
+    private static final String QUERY_EXISTS_BY_EMAIL = "select exists(select * FROM couponsystem.customers WHERE `email` = ?) as res;";
     private static final String QUERY_EXISTS_BY_ID = "select exists(select * FROM couponsystem.customers WHERE `id` = ?) as res;";
+    private static final String QUERY_GET_CUSTOMER_ID = "SELECT id FROM couponsystem.customers WHERE email = ? AND password = ?;";
+    private static final String QUERY_DOES_CUSTOMER_OWN_A_COUPON = "select exists(SELECT * FROM couponsystem.customers_vs_coupons where CUSTOMER_ID = ? AND COUPON_ID = ?) as res;";
 
+
+    @Override
+    public boolean isCouponOwnedByCustomer(int customerID, int couponID) throws SQLException, InterruptedException {
+        boolean flag = false;
+
+        Map<Integer, Object> params = new HashMap<>();
+
+        params.put(1, customerID);
+        params.put(2, couponID);
+
+        List<?> rows = JDBCUtils.executeResults(QUERY_DOES_CUSTOMER_OWN_A_COUPON, params);
+
+        for (Object row : rows) {
+            flag = ResultUtils.exists((HashMap<String, Object>) row);
+            break;
+        }
+
+        return flag;
+    }
+
+    @Override
+    public int returnCustomerID(String email, String password) throws SQLException, InterruptedException {
+        int result = 0;
+
+        Map<Integer, Object> params = new HashMap<>();
+
+        params.put(1, email);
+        params.put(2, password);
+
+        List<?> rows = JDBCUtils.executeResults(QUERY_GET_CUSTOMER_ID, params);
+
+        for (Object row : rows) {
+            result = ResultUtils.fromHashMapReturnInt((HashMap<String, Object>) row);
+            break;
+        }
+
+        return result;
+    }
 
     private boolean isCustomerExistByID(int id) throws SQLException, InterruptedException {
         boolean flag = false;
@@ -30,7 +71,7 @@ public class CustomerDBDAO implements CustomersDAO {
 
         params.put(1, id);
 
-        List<?> rows = JDBCUtils.executeResult(QUERY_EXISTS_BY_ID, params);
+        List<?> rows = JDBCUtils.executeResults(QUERY_EXISTS_BY_ID, params);
 
 //        return rows.size() > 0;
         for (Object row : rows) {
@@ -43,15 +84,14 @@ public class CustomerDBDAO implements CustomersDAO {
     }
 
     @Override
-    public boolean isCustomerExists(String email, String password) throws SQLException, InterruptedException {
+    public boolean isCustomerExists(String email) throws SQLException, InterruptedException {
         boolean flag = false;
 
         Map<Integer, Object> params = new HashMap<>();
 
         params.put(1, email);
-        params.put(2, password);
 
-        List<?> rows = JDBCUtils.executeResult(QUERY_EXISTS, params);
+        List<?> rows = JDBCUtils.executeResults(QUERY_EXISTS_BY_EMAIL, params);
 
         for (Object row : rows) {
             flag = ResultUtils.exists((HashMap<String, Object>) row);
@@ -62,7 +102,30 @@ public class CustomerDBDAO implements CustomersDAO {
     }
 
     @Override
-    public void addCustomer(Customer customer) throws SQLException, InterruptedException {
+    public boolean isCustomerExists(String email, String password) throws SQLException, InterruptedException {
+        boolean flag = false;
+
+        Map<Integer, Object> params = new HashMap<>();
+
+        params.put(1, email);
+        params.put(2, password);
+
+        List<?> rows = JDBCUtils.executeResults(QUERY_EXISTS, params);
+
+        for (Object row : rows) {
+            flag = ResultUtils.exists((HashMap<String, Object>) row);
+            break;
+        }
+
+        return flag;
+    }
+
+    @Override
+    public void addCustomer(Customer customer) throws SQLException, InterruptedException, AlreadyExists {
+        if(isCustomerExists(customer.getEmail())){
+            throw new AlreadyExists("Customer email's already exists");
+        }
+
         Map<Integer, Object> params = new HashMap<>();
 
         params.put(1, customer.getFirstName());
@@ -132,10 +195,10 @@ public class CustomerDBDAO implements CustomersDAO {
 
         params.put(1, customerID);
 
-        List<?> rows = JDBCUtils.executeResult(QUERY_SELECT_SINGLE_CUSTOMER, params);
+        List<?> rows = JDBCUtils.executeResults(QUERY_SELECT_SINGLE_CUSTOMER, params);
 
         for (Object row : rows) {
-            customer = ResultUtils.fromHashMapReturnCustomer((HashMap<String, Object>) rows.get(0));
+            customer = ResultUtils.fromHashMapReturnCustomer((HashMap<String, Object>) row);
             break;
         }
 

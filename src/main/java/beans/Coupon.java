@@ -1,10 +1,16 @@
 package beans;
 
+import dbDAO.CouponsDAO;
+import dbDAO.CouponsDBDAO;
+
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.sql.Date;
 
 public class Coupon {
+    CouponsDAO couponsDAO = new CouponsDBDAO();
+
     private int id;
     private int companyID;
     private Category category;
@@ -57,54 +63,34 @@ public class Coupon {
         return this;
     }
 
-    public Coupon startDate(Date date){
+    public Coupon startDate(Date date) {
         this.startDate = date;
         return this;
     }
 
-    public Coupon endDate(Date date){
+    public Coupon endDate(Date date) {
         this.endDate = date;
         return this;
     }
 
-    public Coupon amount(int amount){
+    public Coupon amount(int amount) {
         this.amount = amount;
         return this;
     }
 
-    public Coupon price(double price){
+    public Coupon price(double price) {
         this.price = price;
         return this;
     }
 
-    public Coupon image(String image){
+    public Coupon image(String image) {
         this.image = image;
         return this;
     }
 
-//    public Coupon(int id, int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
-//        this(companyID, category, title, description, startDate, endDate, amount, price, image);
-//        this.id = id;
-//    }
-//
-//    public Coupon(int companyID, Category category, String title, String description, Date startDate, Date endDate, int amount, double price, String image) {
-//        this.companyID = companyID;
-//        this.category = category;
-//        this.title = title;
-//        this.description = description;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.amount = amount;
-//        this.price = price;
-//        this.image = image;
-//    }
-
-    public int getId() {
+    public int getId() throws SQLException, InterruptedException {
+        this.id = couponsDAO.getCouponID(this.companyID, this.title);
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getCompanyID() {
