@@ -1,8 +1,7 @@
 package dbDAO;
 
 import beans.Company;
-import exceptions.AlreadyExists;
-import exceptions.NotFound;
+import exceptions.CustomExceptions;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -17,10 +16,10 @@ public interface CompaniesDAO {
 
     boolean isCompanyExistByEmail(String email) throws SQLException, InterruptedException;
     boolean isCompanyExistByName(String name) throws SQLException, InterruptedException;
-    void addCompany(Company company) throws SQLException, InterruptedException, AlreadyExists;
-    void updateCompany(int companyID, Company company) throws SQLException, InterruptedException, NotFound;
-    void updateCompanyWithoutName(int companyID, Company company) throws SQLException, InterruptedException, NotFound;
-    void deleteCompany(int companyID) throws SQLException, InterruptedException, NotFound;
+    void addCompany(Company company) throws SQLException, InterruptedException, CustomExceptions;
+    void updateCompany(int companyID, Company company) throws SQLException, InterruptedException, CustomExceptions;
+    void updateCompanyWithoutName(int companyID, Company company) throws SQLException, InterruptedException, CustomExceptions;
+    void deleteCompany(int companyID) throws SQLException, InterruptedException, CustomExceptions;
     List<Company> getAllCompanies() throws SQLException, InterruptedException;
-    Company getOneCompany(int companyID) throws InterruptedException, SQLException, NotFound;
+    Company getOneCompany(int companyID) throws InterruptedException, SQLException, CustomExceptions;
 }

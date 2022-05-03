@@ -14,7 +14,7 @@ public class Customer {
     private String password;
     private ArrayList<Coupon> coupons;
 
-    private CustomersDAO customersDAO = new CustomerDBDAO();
+//    private CustomersDAO customersDAO = new CustomerDBDAO();
 
     public Customer() {
     }
@@ -42,7 +42,7 @@ public class Customer {
     }
 
     public int getId() throws SQLException, InterruptedException {
-        this.id = customersDAO.returnCustomerID(firstName, lastName);
+//        this.id = customersDAO.returnCustomerID(firstName, lastName);
         return id;
     }
 

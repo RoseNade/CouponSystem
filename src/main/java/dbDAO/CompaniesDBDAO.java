@@ -3,8 +3,7 @@ package dbDAO;
 import beans.Company;
 import db.JDBCUtils;
 import db.ResultUtils;
-import exceptions.AlreadyExists;
-import exceptions.NotFound;
+import exceptions.CustomExceptions;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -143,10 +142,10 @@ public class CompaniesDBDAO implements CompaniesDAO{
     }
 
     @Override
-    public void addCompany(Company company) throws SQLException, InterruptedException, AlreadyExists {
-        if(isCompanyExistByEmail(company.getEmail()) || isCompanyExistByName(company.getName())){
-            throw new AlreadyExists("Company's name or email already exists");
-        }
+    public void addCompany(Company company) throws SQLException, InterruptedException {
+//        if(isCompanyExistByEmail(company.getEmail()) || isCompanyExistByName(company.getName())){
+//            throw new AlreadyExists("Company's name or email already exists");
+//        }
 
         Map<Integer, Object> params = new HashMap<>();
 
@@ -158,10 +157,10 @@ public class CompaniesDBDAO implements CompaniesDAO{
     }
 
     @Override
-    public void updateCompanyWithoutName(int companyID, Company company) throws SQLException, InterruptedException, NotFound {
-        if (!isCompanyExistByID(companyID)) {
-            throw new NotFound("Company id not found in database");
-        }
+    public void updateCompanyWithoutName(int companyID, Company company) throws SQLException, InterruptedException {
+//        if (!isCompanyExistByID(companyID)) {
+//            throw new NotFound("Company id not found in database");
+//        }
 
         Map<Integer, Object> params = new HashMap<>();
 
@@ -173,10 +172,10 @@ public class CompaniesDBDAO implements CompaniesDAO{
     }
 
     @Override
-    public void updateCompany(int companyID, Company company) throws SQLException, InterruptedException, NotFound {
-        if (!isCompanyExistByID(companyID)) {
-            throw new NotFound("Company id not found in database");
-        }
+    public void updateCompany(int companyID, Company company) throws SQLException, InterruptedException {
+//        if (!isCompanyExistByID(companyID)) {
+//            throw new NotFound("Company id not found in database");
+//        }
 
         Map<Integer, Object> params = new HashMap<>();
 
@@ -189,10 +188,10 @@ public class CompaniesDBDAO implements CompaniesDAO{
     }
 
     @Override
-    public void deleteCompany(int companyID) throws SQLException, InterruptedException, NotFound {
-        if(!isCompanyExistByID(companyID)){
-            throw new NotFound("Company not found");
-        }
+    public void deleteCompany(int companyID) throws SQLException, InterruptedException {
+//        if(!isCompanyExistByID(companyID)){
+//            throw new NotFound("Company not found");
+//        }
 
         Map<Integer, Object> params = new HashMap<>();
 
@@ -214,11 +213,11 @@ public class CompaniesDBDAO implements CompaniesDAO{
     }
 
     @Override
-    public Company getOneCompany(int companyID) throws InterruptedException, SQLException, NotFound {
+    public Company getOneCompany(int companyID) throws InterruptedException, SQLException {
 
-        if(!isCompanyExistByID(companyID)){
-            throw new NotFound("Company not found");
-        }
+//        if(!isCompanyExistByID(companyID)){
+//            throw new NotFound("Company not found");
+//        }
 
         Company company = null;
 

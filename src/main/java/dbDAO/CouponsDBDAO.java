@@ -4,10 +4,8 @@ import beans.Category;
 import beans.Coupon;
 import db.JDBCUtils;
 import db.ResultUtils;
-import exceptions.NotFound;
 
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +32,21 @@ public class CouponsDBDAO implements CouponsDAO {
     private static final String QUERY_IS_COUPON_EXPIRED = "select exists(SELECT * FROM couponsystem.coupons where ID = ? AND current_date() > END_DATE) as res;";
     private static final String QUERY_ALL_COUPONS_BOUGHT_BY_CUSTOMER_WITH_SPECIFIC_CATEGORY = "SELECT coupons.* FROM couponsystem.customers_vs_coupons join couponsystem.coupons on customers_vs_coupons.COUPON_ID = coupons.id where customers_vs_coupons.CUSTOMER_ID = ? and category_id = ?;";
     private static final String QUERY_ALL_COUPONS_BOUGHT_BY_CUSTOMER_UNDER_CERTAIN_PRICE = "SELECT coupons.* FROM couponsystem.customers_vs_coupons join couponsystem.coupons on customers_vs_coupons.COUPON_ID = coupons.id where customers_vs_coupons.CUSTOMER_ID = ? and price < ?;";
+    private static final String QUERY_SELECT_ALL_EXPIRED_COUPONS = "SELECT * FROM couponsystem.coupons where current_date() > END_DATE";
 
+
+    @Override
+    public List<Coupon> getAllCouponsThatExpired() throws SQLException, InterruptedException {
+        List<Coupon> coupons = new ArrayList<>();
+
+        List<?> rows = JDBCUtils.executeResults(QUERY_SELECT_ALL_EXPIRED_COUPONS);
+
+        for (Object row : rows) {
+            coupons.add(ResultUtils.fromHashMapReturnCoupon((HashMap<String, Object>) row));
+        }
+
+        return coupons;
+    }
 
     @Override
     public List<Coupon> getAllCouponsCustomerOwnsUnderCertainPrice(int customerID, double price) throws SQLException, InterruptedException {
@@ -111,12 +123,12 @@ public class CouponsDBDAO implements CouponsDAO {
 
 
     @Override
-    public boolean isCouponExistByTitleAndID(int companyID, String title) throws SQLException, InterruptedException {
+    public boolean isCouponExistByTitleAndID(int couponID, String title) throws SQLException, InterruptedException {
         boolean flag = false;
 
         Map<Integer, Object> params = new HashMap<>();
 
-        params.put(1, companyID);
+        params.put(1, couponID);
         params.put(2, title);
 
         List<?> rows = JDBCUtils.executeResults(QUERY_COUPON_EXISTS_BY_TITLE_AND_ID, params);
@@ -163,7 +175,8 @@ public class CouponsDBDAO implements CouponsDAO {
         return flag;
     }
 
-    private boolean isCouponExistByID(int id) throws SQLException, InterruptedException {
+    @Override
+    public boolean isCouponExistByID(int id) throws SQLException, InterruptedException {
         boolean flag = false;
 
         Map<Integer, Object> params = new HashMap<>();
@@ -186,16 +199,6 @@ public class CouponsDBDAO implements CouponsDAO {
     public void addCoupon(Coupon coupon) throws SQLException, InterruptedException {
         Map<Integer, Object> params = new HashMap<>();
 
-        int yearStartDate = coupon.getStartDate().getYear() - 1_900;
-        int yearEndDate = coupon.getEndDate().getYear() - 1_900;
-        int monthStartDate = coupon.getStartDate().getMonth() - 1;
-        int monthEndDate = coupon.getEndDate().getMonth() - 1;
-        coupon.getStartDate().setYear(yearStartDate);
-        coupon.getEndDate().setYear(yearEndDate);
-        coupon.getStartDate().setMonth(monthStartDate);
-        coupon.getEndDate().setMonth(monthEndDate);
-
-
         params.put(1, coupon.getTitle());
         params.put(2, coupon.getDescription());
         params.put(3, coupon.getStartDate());
@@ -210,11 +213,11 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
-    public void updateCoupon(int couponID, Coupon coupon) throws SQLException, InterruptedException, NotFound {
+    public void updateCoupon(int couponID, Coupon coupon) throws SQLException, InterruptedException {
 
-        if (!isCouponExistByID(couponID)) {
-            throw new NotFound("Coupon not found");
-        }
+//        if (!isCouponExistByID(couponID)) {
+//            throw new NotFound("Coupon not found");
+//        }
 
         Map<Integer, Object> params = new HashMap<>();
 
@@ -233,12 +236,7 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
-    public void deleteCoupon(int couponID) throws SQLException, InterruptedException, NotFound {
-
-        if (!isCouponExistByID(couponID)) {
-            throw new NotFound("Coupon not found");
-        }
-
+    public void deleteCoupon(int couponID) throws SQLException, InterruptedException {
         Map<Integer, Object> params = new HashMap<>();
 
         params.put(1, couponID);
@@ -247,11 +245,7 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
-    public Coupon getOneCoupon(int couponID) throws SQLException, InterruptedException, NotFound, ParseException {
-
-        if (!isCouponExistByID(couponID)) {
-            throw new NotFound("Coupon not found");
-        }
+    public Coupon getOneCoupon(int couponID) throws SQLException, InterruptedException {
 
         Coupon coupon = null;
 
@@ -271,6 +265,7 @@ public class CouponsDBDAO implements CouponsDAO {
 
     @Override
     public int getCouponID(int companyID, String title) throws SQLException, InterruptedException {
+
         int result = 0;
 
         Map<Integer, Object> params = new HashMap<>();
@@ -290,6 +285,7 @@ public class CouponsDBDAO implements CouponsDAO {
 
     @Override
     public ArrayList<Coupon> getAllCoupons() throws SQLException, InterruptedException {
+
         ArrayList<Coupon> coupons = new ArrayList<>();
         List<?> rows = JDBCUtils.executeResults(QUERY_SELECT_ALL);
 
@@ -302,6 +298,7 @@ public class CouponsDBDAO implements CouponsDAO {
 
     @Override
     public List<Coupon> getAllCouponsByCompanyID(int companyID) throws SQLException, InterruptedException {
+
         List<Coupon> coupons = new ArrayList<>();
 
         Map<Integer, Object> params = new HashMap<>();
@@ -319,6 +316,7 @@ public class CouponsDBDAO implements CouponsDAO {
 
     @Override
     public List<Coupon> getAllCouponsByCompanyIDAndUnderPrice(int companyID, double price) throws SQLException, InterruptedException {
+
         List<Coupon> coupons = new ArrayList<>();
 
         Map<Integer, Object> params = new HashMap<>();
@@ -337,6 +335,7 @@ public class CouponsDBDAO implements CouponsDAO {
 
     @Override
     public List<Coupon> getAllCouponsByCompanyIDAndCategory(int companyID, Category category) throws SQLException, InterruptedException {
+
         List<Coupon> coupons = new ArrayList<>();
 
         Map<Integer, Object> params = new HashMap<>();
@@ -354,14 +353,7 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
-    public void addCouponPurchase(int customerID, int couponID) throws SQLException, InterruptedException, NotFound {
-        if(!isCustomerExistByID(customerID)){
-            throw new NotFound("Customer not found");
-        }
-
-        if (!isCouponExistByID(couponID)) {
-            throw new NotFound("Coupon not found");
-        }
+    public void addCouponPurchase(int customerID, int couponID) throws SQLException, InterruptedException {
 
         Map<Integer, Object> params = new HashMap<>();
         params.put(1, customerID);
@@ -371,11 +363,7 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
-    public void deleteCouponPurchase(int customerID, int couponID) throws NotFound, SQLException, InterruptedException {
-
-        if (!isCouponExistByID(couponID) || !isCustomerExistByID(customerID)) {
-            throw new NotFound("Coupon or costumer not found");
-        }
+    public void deleteCouponPurchase(int customerID, int couponID) throws SQLException, InterruptedException {
 
         Map<Integer, Object> params = new HashMap<>();
 
@@ -386,11 +374,7 @@ public class CouponsDBDAO implements CouponsDAO {
     }
 
     @Override
-    public void deleteCouponPurchaseByCouponID(int couponID) throws NotFound, SQLException, InterruptedException {
-
-        if (!isCouponExistByID(couponID)) {
-            throw new NotFound("Coupon not found");
-        }
+    public void deleteCouponPurchaseByCouponID(int couponID) throws SQLException, InterruptedException {
 
         Map<Integer, Object> params = new HashMap<>();
 

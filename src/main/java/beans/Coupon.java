@@ -1,15 +1,10 @@
 package beans;
 
-import dbDAO.CouponsDAO;
-import dbDAO.CouponsDBDAO;
-
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.sql.Date;
 
 public class Coupon {
-    CouponsDAO couponsDAO = new CouponsDBDAO();
+//    CouponsDAO couponsDAO = new CouponsDBDAO();
 
     private int id;
     private int companyID;
@@ -89,7 +84,7 @@ public class Coupon {
     }
 
     public int getId() throws SQLException, InterruptedException {
-        this.id = couponsDAO.getCouponID(this.companyID, this.title);
+//        this.id = couponsDAO.getCouponID(this.companyID, this.title);
         return id;
     }
 

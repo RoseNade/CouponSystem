@@ -3,8 +3,6 @@ package dbDAO;
 import beans.Customer;
 import db.JDBCUtils;
 import db.ResultUtils;
-import exceptions.AlreadyExists;
-import exceptions.NotFound;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -64,7 +62,8 @@ public class CustomerDBDAO implements CustomersDAO {
         return result;
     }
 
-    private boolean isCustomerExistByID(int id) throws SQLException, InterruptedException {
+    @Override
+    public boolean isCustomerExistByID(int id) throws SQLException, InterruptedException {
         boolean flag = false;
 
         Map<Integer, Object> params = new HashMap<>();
@@ -121,11 +120,7 @@ public class CustomerDBDAO implements CustomersDAO {
     }
 
     @Override
-    public void addCustomer(Customer customer) throws SQLException, InterruptedException, AlreadyExists {
-        if(isCustomerExists(customer.getEmail())){
-            throw new AlreadyExists("Customer email's already exists");
-        }
-
+    public void addCustomer(Customer customer) throws SQLException, InterruptedException {
         Map<Integer, Object> params = new HashMap<>();
 
         params.put(1, customer.getFirstName());
@@ -137,11 +132,7 @@ public class CustomerDBDAO implements CustomersDAO {
     }
 
     @Override
-    public void updateCustomer(int customerID, Customer customer) throws SQLException, InterruptedException, NotFound {
-
-        if (!isCustomerExistByID(customerID)) {
-            throw new NotFound("Customer not found");
-        }
+    public void updateCustomer(int customerID, Customer customer) throws SQLException, InterruptedException {
 
         Map<Integer, Object> params = new HashMap<>();
 
@@ -155,11 +146,7 @@ public class CustomerDBDAO implements CustomersDAO {
     }
 
     @Override
-    public void deleteCustomer(int customerID) throws SQLException, InterruptedException, NotFound {
-
-        if (!isCustomerExistByID(customerID)) {
-            throw new NotFound("Customer not found");
-        }
+    public void deleteCustomer(int customerID) throws SQLException, InterruptedException {
 
         Map<Integer, Object> params = new HashMap<>();
 
@@ -183,12 +170,7 @@ public class CustomerDBDAO implements CustomersDAO {
     }
 
     @Override
-    public Customer getOneCustomer(int customerID) throws SQLException, InterruptedException, NotFound {
-
-        if (!isCustomerExistByID(customerID)) {
-            throw new NotFound("Customer not found");
-        }
-
+    public Customer getOneCustomer(int customerID) throws SQLException, InterruptedException {
         Customer customer = null;
 
         Map<Integer, Object> params = new HashMap<>();

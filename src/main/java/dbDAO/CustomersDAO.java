@@ -1,13 +1,10 @@
 package dbDAO;
 
-import beans.Coupon;
 import beans.Customer;
-import exceptions.AlreadyExists;
-import exceptions.NotFound;
+import exceptions.CustomExceptions;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public interface CustomersDAO {
 
@@ -20,10 +17,11 @@ public interface CustomersDAO {
     boolean isCustomerExists(String email) throws SQLException, InterruptedException;
 
     boolean isCustomerExists(String email, String password) throws SQLException, InterruptedException;
-    void addCustomer(Customer customer) throws SQLException, InterruptedException, AlreadyExists;
-    void updateCustomer(int customerID, Customer customer) throws SQLException, InterruptedException, NotFound;
-    void deleteCustomer(int customerID) throws SQLException, InterruptedException, NotFound;
+    void addCustomer(Customer customer) throws SQLException, InterruptedException, CustomExceptions;
+    void updateCustomer(int customerID, Customer customer) throws SQLException, InterruptedException;
+    void deleteCustomer(int customerID) throws SQLException, InterruptedException;
     ArrayList<Customer> getAllCustomers() throws SQLException, InterruptedException;
-    Customer getOneCustomer(int customerID) throws SQLException, InterruptedException, NotFound;
+    Customer getOneCustomer(int customerID) throws SQLException, InterruptedException;
 
+    boolean isCustomerExistByID(int customerID) throws SQLException, InterruptedException;
 }

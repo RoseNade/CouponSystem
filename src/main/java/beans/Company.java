@@ -13,7 +13,7 @@ public class Company {
     private String password;
     private ArrayList<Coupon> coupons;
 
-    CompaniesDAO companiesDAO = new CompaniesDBDAO();
+//    CompaniesDAO companiesDAO = new CompaniesDBDAO();
 
     public Company() {
     }
@@ -40,7 +40,7 @@ public class Company {
     }
 
     public int getId() throws SQLException, InterruptedException {
-        this.id = companiesDAO.returnCompanyID(this.getEmail(), this.getPassword());
+//        this.id = companiesDAO.returnCompanyID(this.getEmail(), this.getPassword());
         return id;
     }
 
